@@ -1,0 +1,56 @@
+Sub CalculateVolume()
+    
+    ' Activate 2015 sheet
+    Sheets("2015").Activate
+
+    'Initialize Ticker Name and Total Volume
+    Dim Ticker_Name As String
+    Dim Total_Volume As Double
+    Ticker_Name = Cells(2, 1).Value
+    Total_Volume = Cells(2, 7).Value
+    
+    'Write the headers for Ticker Name and Total Volume
+    Cells(1, 10).Value = "Ticker Name"
+    Cells(1, 11).Value = "Total Volume"
+    
+    'Initialize new row that will contain final calculated volume
+    Dim NewRowToWriteFinalVolume As Integer
+    NewRowToWriteFinalVolume = 2
+
+    'Initialize Last Row
+    Dim WS As Worksheet
+    Dim LastRow As Long
+    
+    Set WS = Sheets("2015")
+    
+    LastRow = WS.Cells(WS.Rows.Count, "A").End(xlUp).row
+    
+    'Initialize the row that will be compared to the Ticker Name
+    Dim Counting_Row As Long
+    For Counting_Row = 3 To LastRow + 1
+    
+        'Compare if Following Ticker is the same as the previous Ticker name
+        If Cells(Counting_Row, 1).Value = Ticker_Name Then
+            'Then increment the Total Volume
+            Total_Volume = Total_Volume + Cells(Counting_Row, 7).Value
+        
+        Else
+            'Else finish adding volume
+            'Write the name of the ticker and total volume in J and K respectively
+            Cells(NewRowToWriteFinalVolume, 10).Value = Ticker_Name
+            Cells(NewRowToWriteFinalVolume, 11).Value = Total_Volume
+            
+            ' Add one to writing the name of the ticker and total volume in J and K
+            NewRowToWriteFinalVolume = NewRowToWriteFinalVolume + 1
+            
+            'Restart the ticker and add the starting volume for the next ticker
+            Ticker_Name = Cells(Counting_Row, 1).Value
+            Total_Volume = Cells(Counting_Row, 7).Value
+            
+        End If
+        
+    Next Counting_Row
+        
+End Sub
+
+
