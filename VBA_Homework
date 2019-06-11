@@ -1,5 +1,10 @@
+Option Explicit
 Sub CalculateVolume()
     
+    Dim Start As Double
+    Dim Opening As Double
+    Dim Ending As Double
+    Dim Change As Double
     ' Activate 2015 sheet
     Sheets("2015").Activate
 
@@ -11,7 +16,9 @@ Sub CalculateVolume()
     
     'Write the headers for Ticker Name and Total Volume
     Cells(1, 10).Value = "Ticker Name"
-    Cells(1, 11).Value = "Total Volume"
+    Cells(1, 11).Value = "Yearly Change"
+    Cells(1, 13).Value = "Total Stock Volume"
+    
     
     'Initialize new row that will contain final calculated volume
     Dim NewRowToWriteFinalVolume As Integer
@@ -19,10 +26,9 @@ Sub CalculateVolume()
 
     'Initialize Last Row
     Dim WS As Worksheet
-    Dim LastRow As Long
-    
     Set WS = Sheets("2015")
-    
+
+    Dim LastRow As Long
     LastRow = WS.Cells(WS.Rows.Count, "A").End(xlUp).row
     
     'Initialize the row that will be compared to the Ticker Name
@@ -33,12 +39,12 @@ Sub CalculateVolume()
         If Cells(Counting_Row, 1).Value = Ticker_Name Then
             'Then increment the Total Volume
             Total_Volume = Total_Volume + Cells(Counting_Row, 7).Value
-        
+            Start = Start + 1
         Else
             'Else finish adding volume
             'Write the name of the ticker and total volume in J and K respectively
             Cells(NewRowToWriteFinalVolume, 10).Value = Ticker_Name
-            Cells(NewRowToWriteFinalVolume, 11).Value = Total_Volume
+            Cells(NewRowToWriteFinalVolume, 13).Value = Total_Volume
             
             ' Add one to writing the name of the ticker and total volume in J and K
             NewRowToWriteFinalVolume = NewRowToWriteFinalVolume + 1
@@ -47,7 +53,25 @@ Sub CalculateVolume()
             Ticker_Name = Cells(Counting_Row, 1).Value
             Total_Volume = Cells(Counting_Row, 7).Value
             
+            'Calculate Change
+            'Opening Value
+            Opening = Cells(Counting_Row - Start - 1, 3).Value
+            'Closing Value
+            Ending = Cells(Counting_Row - 1, 6).Value
+            
+           'Calculate Change
+            Change = (Format(Ending, "#0.00") - Format(Opening, "#0.00")) 
+            
+            'Format Change
+            Cells(NewRowToWriteFinalVolume - 1, 11).Value = Format(Change, "#0.00")
+
+            
+            
+            
         End If
+        
+        
+        
         
     Next Counting_Row
         
